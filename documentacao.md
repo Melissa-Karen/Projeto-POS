@@ -22,8 +22,6 @@
 O projeto consiste em um sistema no qual o usuário registrado poderá buscar por sugestões de filmes com base no seu gosto pessoal. Para isso, o programa contará com a funcionalidade de registro dos filmes já assistidos pelo usuário e a avaliação dele. Também contará com opções de filtros na página de recomendações para selecionar de forma mais precisa as obras. As recomendações serão propostas por uma Inteligência Artificial que será consultada através da API disponibilizada pela OpenAI, enquanto sua exibição contará com a API  do TMDB para trazer uma ficha mais detalhada dos filmes propostos. Cada usuário precisará se registrar no sistema e suas credenciais ficarão salvas em um banco de dados, assim como os dados que fornecer (como seus filmes assistidos e suas respectivas avaliações).
 
 </br>
-</br>
-</br>
 
 ### **2.1 Funcionalidades Principais**
 * **Funcionalidade 01:** / </br>
@@ -69,8 +67,6 @@ O projeto consiste em um sistema no qual o usuário registrado poderá buscar po
     método: POST </br>
     descrição: Envia uma requisição à API da OpenAI com as informações especiicadas e retorna essas sugestões na forma de cards, que possuirão informações mais detalhadas graças à API do TMDB.
 
-</br>
-</br>
 </br>
 
 ### **2.2 Arquitetura do Código**
