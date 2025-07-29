@@ -1,112 +1,69 @@
-# **Documentação do Projeto: Miliviaflix (nome não definitivo)**
-## **1. Visão Geral**
-**Tecnologia Utilizada:**
+# Documentação do Projeto: Viagem+ (nome provisório)
 
-* Python
-* FastAPI
-* Uvicorn
-* Pydantic
-* OpenAI API
-* SQLite
-* TMDB API
+## 1. Visão Geral
 
-**Descrição:** Implementação de uma aplicação web de recomendação de filmes personalizada com uso de inteligência artificial. </br>
-**Objetivo:** Desenvolver uma plataforma onde usuários possam registrar, avaliar filmes e receber sugestões personalizadas com base em suas preferências, utilizando integração com APIs externas para enriquecimento de dados e geração de recomendações..
+### Tecnologias Utilizadas
 
-</br>
-</br>
-</br>
+- Python  
+- FastAPI  
+- SQLModel  
+- SQLite  
+- Uvicorn  
+- Pydantic  
 
-## **2. Descrição Detalhada do Projeto**
-### **O que é projeto?**
-O projeto consiste em um sistema no qual o usuário registrado poderá buscar por sugestões de filmes com base no seu gosto pessoal. Para isso, o programa contará com a funcionalidade de registro dos filmes já assistidos pelo usuário e a avaliação dele. Também contará com opções de filtros na página de recomendações para selecionar de forma mais precisa as obras. As recomendações serão propostas por uma Inteligência Artificial que será consultada através da API disponibilizada pela OpenAI, enquanto sua exibição contará com a API  do TMDB para trazer uma ficha mais detalhada dos filmes propostos. Cada usuário precisará se registrar no sistema e suas credenciais ficarão salvas em um banco de dados, assim como os dados que fornecer (como seus filmes assistidos e suas respectivas avaliações).
+### Descrição
 
-</br>
+Aplicação web de controle financeiro de viagens, permitindo cadastro de usuários, criação de viagens, registro de despesas e geração de resumos financeiros com alertas sobre orçamento.
 
-### **2.1 Funcionalidades Principais**
-* **Funcionalidade 01:** / </br>
-    método: GET </br>
-    descrição: Exibe a página inicial
-* **Funcionalidade 02:** /cadastro </br>
-    método: GET </br>
-    descrição: Exibe a página de cadastro
-* **Funcionalidade 03:** /cadastro </br>
-    métodos: POST </br>
-    descrição: Envia os dados para cadastrar um usuário
-* **Funcionalidade 04:** /login </br>
-    método: GET </br>
-    descrição: Exibe a página de login
-* **Funcionalidade 05:** /login </br>
-    método: POST </br>
-    descrição: Envia os dados para logar um usuário
-* **Funcionalidade 06:** /logout </br>
-    método: POST </br>
-    descrição: Encerra a sessão do usuário
-* **Funcionalidade 07:** /{user} </br>
-    método: GET </br>
-    descrição: Exibe a página home
-* **Funcionalidade 08:**  /{user}/meus-filmes </br>
-    método: GET </br>
-    descrição: Exibe uma página com os filmes assistidos e avaliados pelo usuário
-* **Funcionalidade 09:**  /{user}/meus-filmes </br>
-    método: POST </br>
-    descrição: Permite que o usuário adicione novos filmes à sua lista
-* **Funcionalidade 10:**  /{user}/meus-filmes/{movie_id} </br>
-    método: GET </br>
-    descrição: Exibe uma página contendo as informações de um dos filmes da lista do usuário
-* **Funcionalidade 11:**  /{user}/meus-filmes/{movie_id} </br>
-    método: PUT </br>
-    descrição: Permite que o usuário atualize as informações que forneceu a respeito de determinado filme
-* **Funcionalidade 12:**  /{user}/meus-filmes/{movie_id} </br>
-    método: DELETE </br>
-    descrição: Permite que o usuário delete um filme da sua lista
-* **Funcionalidade 13:**  /{user}/sugerir-filmes </br>
-    método: GET </br>
-    descrição: Exibe uma página onde será possível especificar as característas desejadas nos filmes
-* **Funcionalidade 14:**  /{user}/sugerir-filmes </br>
-    método: POST </br>
-    descrição: Envia uma requisição à API da OpenAI com as informações especiicadas e retorna essas sugestões na forma de cards, que possuirão informações mais detalhadas graças à API do TMDB.
+### Objetivo
 
-</br>
+Oferecer uma plataforma simples e funcional para que usuários acompanhem os gastos em suas viagens e controlem o orçamento de forma prática.
 
-### **2.2 Arquitetura do Código**
+---
 
-```
-projeto_pos/
-├── main.py            # Código principal da API
-├── api.py             # Requisições à API da OpenAI
-├── models.py          # Modelos com Pydantic
-├── requirements.txt   # Dependências do projeto
-├── database.sql       # Banco de dados da aplicação
+## 2. Descrição Detalhada do Projeto
+
+### O que é o projeto?
+
+Viagem+ é um sistema que permite aos usuários registrar suas viagens, controlar despesas associadas e monitorar o orçamento definido para cada viagem. Cada usuário pode criar suas viagens, adicionar despesas com datas e valores, e obter um resumo financeiro para evitar ultrapassar o orçamento planejado.
+
+---
+
+### 2.1 Funcionalidades Principais
+
+| Funcionalidade                   | Rota                               | Método | Descrição                                             |
+|---------------------------------|----------------------------------|--------|-------------------------------------------------------|
+| Criar usuário                   | `/usuarios`                      | POST   | Cadastro de um novo usuário com nome, email e senha. |
+| Login                          | `/login`                        | POST   | Autenticação de usuário por email e senha.            |
+| Criar viagem                   | `/usuarios/{usuario_id}/viagens`| POST   | Criação de nova viagem associada ao usuário.          |
+| Listar viagens do usuário      | `/usuarios/{usuario_id}/viagens`| GET    | Listar todas as viagens de um usuário.                 |
+| Atualizar viagem               | `/viagens/{id}`                 | PUT    | Atualizar dados de uma viagem.                         |
+| Deletar viagem                | `/viagens/{id}`                 | DELETE | Remover viagem do sistema.                             |
+| Adicionar despesa              | `/viagens/{viagem_id}/despesas`| POST   | Adicionar despesa à viagem.                            |
+| Listar despesas da viagem      | `/viagens/{viagem_id}/despesas`| GET    | Listar despesas registradas em uma viagem.             |
+| Atualizar despesa             | `/despesas/{id}`                | PUT    | Atualizar informações de uma despesa.                  |
+| Deletar despesa              | `/despesas/{id}`                | DELETE | Excluir despesa do sistema.                            |
+| Resumo financeiro da viagem    | `/viagens/{viagem_id}/resumo`   | GET    | Calcular total gasto, saldo restante e alerta de orçamento. |
+
+---
+
+### 2.2 Arquitetura do Código
+
+```plaintext
+projeto-pos/
+├── main.py           # Código principal da API com as rotas
+├── models.py         # Modelos SQLModel (Usuario, Viagem, Despesa)
+├── auth.py           # Funções para hash e verificação de senha
+├── requirements.txt  # Dependências do projeto
+└── banco.db          # Banco de dados SQLite local
 ```
 
-</br>
-</br>
-</br>
+---
 
-## **3. Etapas de Entrega (Cronograma Detalhado)**
+## 3. Etapas de Entrega (Cronograma Detalhado)
 
-### Etapa 1:
-**Data limite:** 15/06 </br>
-**Tarefa:** Criar o design das telas </br>
-**Descrição:** Definição da interface visual da aplicação, incluindo as principais páginas como login, cadastro, perfil, lista de filmes e recomendações.
-
-### Etapa 2:
-**Data limite:** 22/06 </br>
-**Tarefa:** Implementar o HTML das telas </br>
-**Descrição:** Codificação das telas criadas na etapa anterior em HTML, estruturando a interface para posterior integração com o backend.
-
-### Etapa 3:
-**Data limite:** 29/06 </br>
-**Tarefa:** Criar o banco de dados e rotas de autenticação </br>
-**Descrição:** Estruturação do banco de dados e desenvolvimento das rotas de cadastro, login, logout e, se possível, edição de perfil e exclusão de conta.
-
-### Etapa 4:
-**Data limite:** 06/07 </br>
-**Tarefa:** Criar rotas da lista de filmes e integrar com TMDB </br>
-**Descrição:** Implementação das rotas para gerenciar a lista de filmes do usuário (CRUD) e integração com a API do TMDB para exibição dos dados dos filmes.
-
-### Etapa 5:
-**Data limite:** 13/07 </br>
-**Tarefa:** Criar rota de recomendação e tela de filtros </br>
-**Descrição:** Desenvolvimento da funcionalidade de recomendação com integração à API da OpenAI, criação da interface com filtros e exibição dos resultados enriquecidos com a API do TMDB.
+| Etapa       | Data         | Tarefa Principal             | Descrição                                                                                   |
+| ----------- | ------------ | ---------------------------- | ------------------------------------------------------------------------------------------- |
+| **Etapa 1** | 27/07        | Finalização do backend       | Concluir implementação das rotas, modelos, autenticação, lógica de viagens e despesas.      |
+| **Etapa 2** | 02/08        | Desenvolvimento da interface | Criar o frontend com HTML/JS simples para testes. Integrar com as rotas da API via fetch.   |
+| **Etapa 3** | 03/08        | Ajustes finais e refinamento | Melhorar usabilidade, corrigir erros, revisar fluxo, documentação e preparar entrega final. |
