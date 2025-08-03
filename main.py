@@ -1,7 +1,7 @@
 from typing import List, Annotated
 from sqlmodel import SQLModel, Session, create_engine, select
 from fastapi import FastAPI, Depends, HTTPException
-from models import Usuario, Viagem, Despesa
+from models import Usuario, Viagem, Despesa, Login
 from contextlib import asynccontextmanager
 from datetime import datetime
 
@@ -49,18 +49,17 @@ def criar_usuario(usuario:Usuario, session:SessionDep) -> Usuario:
 
 
 @app.post("/login")
-def login(email:str, senha:str, session:SessionDep):
-    usuario = session.exec(select(Usuario).where(Usuario.email == email)).first()
+def login(dados:Login, session:SessionDep):
+    usuario = session.exec(select(Usuario).where(Usuario.email == dados.email)).first()
 
     if not usuario:
         raise HTTPException(status_code=404, detail="E-mail incorreto")
 
-    if not verificar_senha(senha, usuario.senha):
+    if not verificar_senha(dados.senha, usuario.senha):
         raise HTTPException(status_code=401, detail="Senha incorreta")
 
     return {
-        "mensagem": "Login bem-sucedido",
-        "usuario_id": usuario.id,
+        "id": usuario.id,
         "nome": usuario.nome,
         "email": usuario.email
     }
@@ -68,9 +67,9 @@ def login(email:str, senha:str, session:SessionDep):
 
 @app.post("/usuarios/{usuario_id}/viagens")
 def criar_viagem(usuario_id:int, viagem:Viagem, session:SessionDep) -> Viagem:
-    viagem.usuario_id = usuario_id
     viagem.data_inicio = converter_str_date(viagem.data_inicio)
     viagem.data_fim = converter_str_date(viagem.data_fim)
+    viagem.usuario_id = usuario_id
 
     session.add(viagem)
     session.commit()
@@ -94,7 +93,7 @@ def detalhar_viagem(id:int, session:SessionDep):
 
 
 @app.put("/viagens/{id}")
-def atualizar_viagem(id: int, dados: Viagem, session: SessionDep) -> Viagem:
+def atualizar_viagem(id:int, dados: Viagem, session: SessionDep) -> Viagem:
     dados.data_inicio = converter_str_date(dados.data_inicio)
     dados.data_fim = converter_str_date(dados.data_fim)
 
@@ -107,7 +106,7 @@ def atualizar_viagem(id: int, dados: Viagem, session: SessionDep) -> Viagem:
 
 
 @app.delete("/viagens/{id}")
-def deletar_viagem(id: int, session: SessionDep):
+def deletar_viagem(id:int, session: SessionDep):
     viagem = session.exec(select(Viagem).where(Viagem.id == id)).one()
     session.delete(viagem)
     session.commit()
@@ -115,7 +114,7 @@ def deletar_viagem(id: int, session: SessionDep):
 
 
 @app.post("/viagens/{viagem_id}/despesas")
-def adicionar_despesa(viagem_id: int, despesa: Despesa, session: SessionDep) -> Despesa:
+def adicionar_despesa(viagem_id:int, despesa:Despesa, session: SessionDep) -> Despesa:
     despesa.data = converter_str_date(despesa.data)
     despesa.viagem_id = viagem_id
     session.add(despesa)
@@ -125,23 +124,26 @@ def adicionar_despesa(viagem_id: int, despesa: Despesa, session: SessionDep) -> 
 
 
 @app.get("/viagens/{viagem_id}/despesas", response_model=List[Despesa])
-def listar_despesas(viagem_id: int, session: SessionDep):
-    return session.exec(select(Despesa).where(Despesa.viagem_id == viagem_id)).all()
+def listar_despesas(id:int, session: SessionDep):
+    return session.exec(select(Despesa).where(Despesa.viagem_id == id)).all()
 
 
 @app.put("/despesas/{id}")
-def atualizar_despesa(id: int, dados: Despesa, session: SessionDep) -> Despesa:
+def atualizar_despesa(dados: Despesa, session: SessionDep) -> Despesa:
     dados.data = converter_str_date(dados.data)
     despesa = session.exec(select(Despesa).where(Despesa.id == id)).one()
-    for campo, valor in dados.dict(exclude_unset=True).items():
+    
+    for campo, valor in dados.model_dump(exclude_unset=True).items():
         setattr(despesa, campo, valor)
+    
     session.commit()
     session.refresh(despesa)
     return despesa
 
 
+
 @app.delete("/despesas/{id}")
-def deletar_despesa(id: int, session: SessionDep):
+def deletar_despesa(id:int, session: SessionDep):
     despesa = session.exec(select(Despesa).where(Despesa.id == id)).one()
     session.delete(despesa)
     session.commit()
@@ -150,9 +152,9 @@ def deletar_despesa(id: int, session: SessionDep):
 
 #RESUMO FINANCEIRO DA VIAGEM
 @app.get("/viagens/{viagem_id}/resumo")
-def resumo_viagem(viagem_id: int, session: SessionDep):
-    viagem = session.exec(select(Viagem).where(Viagem.id == viagem_id)).first()
-    despesas = session.exec(select(Despesa).where(Despesa.viagem_id == viagem_id)).all()
+def resumo_viagem(id:int, session: SessionDep):
+    viagem = session.exec(select(Viagem).where(Viagem.id == id)).first()
+    despesas = session.exec(select(Despesa).where(Despesa.id == id)).all()
     total_gasto = sum(d.valor for d in despesas)
     saldo = viagem.orcamento_total - total_gasto
     alerta = saldo < 0

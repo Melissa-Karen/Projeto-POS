@@ -28,3 +28,8 @@ class Despesa(SQLModel, table=True):
     valor: float
     data: date
     categoria: str
+
+
+class Login(SQLModel):
+    email: str
+    senha: str
