@@ -170,7 +170,6 @@ def excluir_despesa(viagem_id):
         confirmacao = input(f"Tem certeza que deseja excluir a despesa ID {despesa_id}? (s/n): ").lower()
 
     if confirmacao == 's':
-        animacao_carregamento()
         response = requests.delete(f"{API}/despesas/{despesa_id}", headers=headers)
         if response.status_code == 200:
             animacao_carregamento()
