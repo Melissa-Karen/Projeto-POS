@@ -1,4 +1,4 @@
-# Documentação do Projeto: Viagem+ (nome provisório)
+# Documentação do Projeto: Viagem+
 
 ## 1. Visão Geral
 
@@ -10,24 +10,27 @@
 - SQLite  
 - Uvicorn  
 - Pydantic  
+- Requests
+- Tabulate
 
 ### Descrição
 
-Aplicação web de controle financeiro de viagens, permitindo cadastro de usuários, criação de viagens, registro de despesas e geração de resumos financeiros com alertas sobre orçamento.
+Aplicação de controle financeiro de viagens, permitindo cadastro de usuários, criação de viagens, registro de despesas e geração de resumos financeiros com alertas sobre orçamento. Possui interface CLI para interação com o usuário.
 
 ### Objetivo
 
-Oferecer uma plataforma simples e funcional para que usuários acompanhem os gastos em suas viagens e controlem o orçamento de forma prática.
+Oferecer uma plataforma simples e funcional para que usuários acompanhem os gastos em suas viagens e controlem o orçamento de forma prática através de uma interface amigável.
 
 ---
 
 ## 2. Descrição Detalhada do Projeto
 
-### O que é o projeto?
+### Arquitetura do Sistema
 
-Viagem+ é um sistema que permite aos usuários registrar suas viagens, controlar despesas associadas e monitorar o orçamento definido para cada viagem. Cada usuário pode criar suas viagens, adicionar despesas com datas e valores, e obter um resumo financeiro para evitar ultrapassar o orçamento planejado.
-
----
+O sistema é composto por:
+1. Backend: API RESTful construída com FastAPI
+2. Frontend: Interface CLI que consome a API
+3. Banco de Dados: SQLite para persistência de dados
 
 ### 2.1 Funcionalidades Principais
 
@@ -47,15 +50,26 @@ Viagem+ é um sistema que permite aos usuários registrar suas viagens, controla
 
 ---
 
-### 2.2 Arquitetura do Código
+### 2.2 Estrutura do Projeto
 
 ```plaintext
 projeto-pos/
-├── main.py           # Código principal da API com as rotas
-├── models.py         # Modelos SQLModel (Usuario, Viagem, Despesa)
-├── auth.py           # Funções para hash e verificação de senha
-├── requirements.txt  # Dependências do projeto
-└── banco.db          # Banco de dados SQLite local
+├── backend/
+│   ├── main.py           # Código principal da API com as rotas
+│   ├── models.py         # Modelos SQLModel 
+│   ├── auth.py           # Funções para hash e verificação de senha
+│   ├── interface.py      # Ponto de entrada da interface CLI
+│   └── requirements.txt  # Dependências do frontend CLI
+├── frontend/
+│   ├── cli/
+│   │   ├── config.py     # Configurações da API e cabeçalhos
+│   │   ├── despesa.py    # Funções para gerenciamento de despesas
+│   │   ├── menus.py      # Menus de navegação do sistema
+│   │   ├── terminal.py   # Funções auxiliares para o terminal
+│   │   ├── usuario.py    # Funções para gerenciamento de usuários
+│   │   └── viagem.py     # Funções para gerenciamento de viagens
+└── banco.db              # Banco de dados SQLite local
+
 ```
 
 ---
@@ -65,5 +79,5 @@ projeto-pos/
 | Etapa       | Data         | Tarefa Principal             | Descrição                                                                                   |
 | ----------- | ------------ | ---------------------------- | ------------------------------------------------------------------------------------------- |
 | **Etapa 1** | 27/07        | Finalização do backend       | Concluir implementação das rotas, modelos, autenticação, lógica de viagens e despesas.      |
-| **Etapa 2** | 02/08        | Desenvolvimento da interface | Criar o frontend com HTML/JS simples para testes. Integrar com as rotas da API via fetch.   |
-| **Etapa 3** | 03/08        | Ajustes finais e refinamento | Melhorar usabilidade, corrigir erros, revisar fluxo, documentação e preparar entrega final. |
+| **Etapa 2** | 02/08        | Desenvolvimento da interface | Criar o frontend CLI com menus navegáveis. Integrar com as rotas da API via requests.   |
+| **Etapa 3** | 03/08        | Ajustes finais e refinamento | Concluir a interface, melhorar usabilidade, corrigir erros, revisar fluxo, documentação e preparar entrega final. |

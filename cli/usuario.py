@@ -2,6 +2,7 @@ import requests
 from getpass import getpass
 from .config import API, headers
 
+
 def cadastrar_usuario():
     nome = input("Digite seu nome: ")
     email = input("Digite seu e-mail: ")
@@ -34,4 +35,3 @@ def logar_usuario():
 
     response = requests.post(f"{API}/login", json=json, headers=headers)
     return response
-

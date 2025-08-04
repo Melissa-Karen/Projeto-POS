@@ -123,13 +123,21 @@ def adicionar_despesa(viagem_id:int, despesa:Despesa, session: SessionDep) -> De
     return despesa
 
 
+@app.get("/despesas/{id}", response_model=Despesa)
+def obter_despesa(id:int, session: SessionDep):
+    despesa = session.exec(select(Despesa).where(Despesa.id == id)).first()
+    if not despesa:
+        raise HTTPException(status_code=404, detail="Despesa não encontrada")
+    return despesa
+
+
 @app.get("/viagens/{viagem_id}/despesas", response_model=List[Despesa])
-def listar_despesas(id:int, session: SessionDep):
-    return session.exec(select(Despesa).where(Despesa.viagem_id == id)).all()
+def listar_despesas(viagem_id:int, session: SessionDep):
+    return session.exec(select(Despesa).where(Despesa.viagem_id == viagem_id)).all()
 
 
 @app.put("/despesas/{id}")
-def atualizar_despesa(dados: Despesa, session: SessionDep) -> Despesa:
+def atualizar_despesa(id:int, dados: Despesa, session: SessionDep) -> Despesa:
     dados.data = converter_str_date(dados.data)
     despesa = session.exec(select(Despesa).where(Despesa.id == id)).one()
     
@@ -139,7 +147,6 @@ def atualizar_despesa(dados: Despesa, session: SessionDep) -> Despesa:
     session.commit()
     session.refresh(despesa)
     return despesa
-
 
 
 @app.delete("/despesas/{id}")
@@ -154,7 +161,7 @@ def deletar_despesa(id:int, session: SessionDep):
 @app.get("/viagens/{viagem_id}/resumo")
 def resumo_viagem(id:int, session: SessionDep):
     viagem = session.exec(select(Viagem).where(Viagem.id == id)).first()
-    despesas = session.exec(select(Despesa).where(Despesa.id == id)).all()
+    despesas = session.exec(select(Despesa).where(Despesa.viagem_id == id)).all()
     total_gasto = sum(d.valor for d in despesas)
     saldo = viagem.orcamento_total - total_gasto
     alerta = saldo < 0
